@@ -3,7 +3,7 @@
     using UnityEngine;
     using System.Collections;
 
-    public class BowAim : MonoBehaviour
+    public class BowAim : Photon.MonoBehaviour
     {
         public float powerMultiplier;
         public float pullMultiplier;
@@ -11,6 +11,7 @@
         public float maxPullDistance = 1.1f;
         public float bowVibration = 0.062f;
         public float stringVibration = 0.087f;
+        public GameObject RPCArrow;
 
         private BowAnimation bowAnimation;
         private GameObject currentArrow;
@@ -128,6 +129,7 @@
 
         private void Release()
         {
+            Debug.Log("Release");
             bowAnimation.SetFrame(0);
             currentArrow.transform.SetParent(null);
             Collider[] arrowCols = currentArrow.GetComponentsInChildren<Collider>();
@@ -140,13 +142,34 @@
                     Physics.IgnoreCollision(c, C);
                 }
             }
+
             currentArrow.GetComponent<Rigidbody>().isKinematic = false;
-            currentArrow.GetComponent<Rigidbody>().velocity = currentPull * powerMultiplier * currentArrow.transform.TransformDirection(Vector3.forward);
+            Vector3 velocity = currentPull * powerMultiplier * currentArrow.transform.TransformDirection(Vector3.forward);
+            currentArrow.GetComponent<Rigidbody>().velocity = velocity;
             currentArrow.GetComponent<Arrow>().inFlight = true;
+            photonView.RPC("NetFire", PhotonTargets.All, currentArrow.transform.position, currentArrow.transform.rotation, velocity);
             currentArrow = null;
             currentPull = 0;
-
             ReleaseArrow();
+        }
+
+
+        [PunRPC]
+        void NetFire(Vector3 position, Quaternion rotation, Vector3 velocity)
+        {
+            // Create the Bullet from the Bullet Prefab
+            Debug.Log("CHTONG");
+            var rpcArrow = Instantiate(
+                RPCArrow,
+                position,
+                rotation);
+            rpcArrow.GetComponent<Rigidbody>().isKinematic = false;
+            rpcArrow.GetComponent<Rigidbody>().velocity = velocity;
+    
+            // Play sound of gun shooting
+            //AudioSource.PlayClipAtPoint(fireGunSound, transform.position, 1.0f);
+            // Play animation of gun shooting
+            //fireAnimation.Play();
         }
 
         private void ReleaseArrow()

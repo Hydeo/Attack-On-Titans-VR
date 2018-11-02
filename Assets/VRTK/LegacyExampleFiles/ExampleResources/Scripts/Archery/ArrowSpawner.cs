@@ -2,7 +2,7 @@
 {
     using UnityEngine;
 
-    public class ArrowSpawner : MonoBehaviour
+    public class ArrowSpawner : Photon.MonoBehaviour
     {
         public GameObject arrowPrefab;
         public float spawnDelay = 1f;
@@ -25,7 +25,23 @@
                 grabbingController.GetComponent<VRTK_InteractTouch>().ForceTouch(newArrow);
                 grabbingController.AttemptGrab();
                 spawnDelayTimer = Time.time + spawnDelay;
+                photonView.RPC("NetFire", PhotonTargets.All, newArrow.transform.position, newArrow.transform.rotation);
             }
+        }
+
+        [PunRPC]
+        void NetFire(Vector3 position, Quaternion rotation)
+        {
+            Debug.Log("Create Arrow PUN");
+            // Create the Bullet from the Bullet Prefab
+            var bullet = Instantiate(
+                arrowPrefab,
+                position,
+                rotation);
+            // Play sound of gun shooting
+            //AudioSource.PlayClipAtPoint(fireGunSound, transform.position, 1.0f);
+            // Play animation of gun shooting
+            //fireAnimation.Play();
         }
 
         private bool CanGrab(VRTK_InteractGrab grabbingController)
