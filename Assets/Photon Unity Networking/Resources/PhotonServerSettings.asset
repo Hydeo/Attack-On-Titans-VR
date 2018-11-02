@@ -46,4 +46,5 @@ MonoBehaviour:
   - SetPanoramaFromObject
   - SpawnAvatar
   - TaggedPlayer
+  - SpawnOnNetwork
   DisableAutoOpenWizard: 1
