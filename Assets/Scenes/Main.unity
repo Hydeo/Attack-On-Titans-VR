@@ -8696,7 +8696,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 780733270}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: af018577f438cf542b899ec9138bf9e4, type: 3}
   m_Name: 
@@ -9721,6 +9721,11 @@ Prefab:
       propertyPath: arrowPrefab
       value: 
       objectReference: {fileID: 182108, guid: da23bdf76745c6c4f9258cd40e3d4859, type: 2}
+    - target: {fileID: 114227358818196366, guid: d54bd474a6a9ebe49900f538054bd038,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d54bd474a6a9ebe49900f538054bd038, type: 2}
   m_IsPrefabAsset: 0

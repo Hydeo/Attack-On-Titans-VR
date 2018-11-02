@@ -147,7 +147,7 @@
             Vector3 velocity = currentPull * powerMultiplier * currentArrow.transform.TransformDirection(Vector3.forward);
             currentArrow.GetComponent<Rigidbody>().velocity = velocity;
             currentArrow.GetComponent<Arrow>().inFlight = true;
-            photonView.RPC("NetFire", PhotonTargets.All, currentArrow.transform.position, currentArrow.transform.rotation, velocity);
+            photonView.RPC("NetFire", PhotonTargets.Others, currentArrow.transform.position, currentArrow.transform.rotation, velocity);
             currentArrow = null;
             currentPull = 0;
             ReleaseArrow();

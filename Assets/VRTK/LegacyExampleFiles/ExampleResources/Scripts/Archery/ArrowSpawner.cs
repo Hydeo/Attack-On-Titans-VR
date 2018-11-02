@@ -25,7 +25,7 @@
                 grabbingController.GetComponent<VRTK_InteractTouch>().ForceTouch(newArrow);
                 grabbingController.AttemptGrab();
                 spawnDelayTimer = Time.time + spawnDelay;
-                photonView.RPC("NetFire", PhotonTargets.All, newArrow.transform.position, newArrow.transform.rotation);
+                //photonView.RPC("NetFire", PhotonTargets.All, newArrow.transform.position, newArrow.transform.rotation);
             }
         }
 
