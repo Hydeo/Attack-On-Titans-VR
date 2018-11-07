@@ -9,11 +9,11 @@
         public VRTK_ControllerEvents controllerEvents;
         public VRTK_ControllerEvents.ButtonAlias toggleButton = VRTK_ControllerEvents.ButtonAlias.ButtonTwoPress;
 
-        protected bool isVisible;
+        protected bool isVisible = true;
 
         protected virtual void Awake()
         {
-            isVisible = false;
+            isVisible = true;
             ToggleVisibility();
         }
 

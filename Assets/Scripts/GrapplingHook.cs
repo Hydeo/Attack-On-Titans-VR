@@ -32,8 +32,6 @@ public class GrapplingHook : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Debug.Log(GetComponent<VRTK_ControllerEvents>().triggerClicked);
-
         if (Input.GetKey(KeyCode.K) || GetComponent<VRTK_ControllerEvents>().triggerClicked)
             FindSpot();
 

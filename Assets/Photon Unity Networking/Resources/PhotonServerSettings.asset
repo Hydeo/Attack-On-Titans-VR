@@ -47,4 +47,5 @@ MonoBehaviour:
   - SpawnAvatar
   - TaggedPlayer
   - SpawnOnNetwork
+  - SpawnBitchies
   DisableAutoOpenWizard: 1
