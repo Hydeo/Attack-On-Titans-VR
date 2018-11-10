@@ -8,6 +8,11 @@ TagManager:
   - Holsterable
   - Sword
   - Arrow
+  - PlayArea
+  - Destructible
+  - Enemy
+  - Waypoint
+  - Breadcrumb
   layers:
   - Default
   - TransparentFX
@@ -17,10 +22,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - Obstacle
+  - Waypoint
   - 
   - 
   - 

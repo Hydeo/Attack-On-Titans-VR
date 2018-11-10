@@ -20,7 +20,7 @@ public class NeckManagement : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Sword")
         {
-            Debug.Log("Neck Hit");
+            GetComponent<AudioSource>().Play();
             m_material.color = Color.green;
             hm.NeckHit();
         }

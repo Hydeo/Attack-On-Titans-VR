@@ -8,57 +8,91 @@ public class GrapplingHook : MonoBehaviour {
     public Transform camPosition;
     public RaycastHit hit;
 
+    public HookPhysicsBehavior.Side side;
+
     public LayerMask cullingmask;
     public int maxDistance;
     public bool isFlying;
-    public Vector3 loc;
+    public Vector3 loc = Vector3.zero;
 
     public float speed = 10f;
+    public float rotationStep = 1f;
+    private float lastMagnitude = 0;
+ 
+    public float minDiffForSlowingDown;
+    public int yHistorySize;
+    private List<float> yAxisHistory;
     public Transform grip1;
-    public Transform grip2;
+
 
     public LineRenderer wire1;
-    public LineRenderer wire2;
+    private LineRenderer helper;
 
+    private float cooldownRope;
+
+    private VRTK_BodyPhysics bp;
     private Transform playArea;
-
+    private HookPhysicsBehavior hpb;
 	// Use this for initialization
 	void Start () {
         playArea = VRTK_DeviceFinder.PlayAreaTransform();
-        
+        GameObject pa = GameObject.FindGameObjectWithTag("PlayArea");
+        bp = pa.GetComponent<VRTK_BodyPhysics>();
+        cooldownRope = Time.time;
+        helper = GetComponent<LineRenderer>();
+        yAxisHistory = new List<float>();
         //camPosition = VRTK_DeviceFinder.HeadsetTransform();
+
+        hpb = pa.GetComponent<HookPhysicsBehavior>();
 
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKey(KeyCode.K) || GetComponent<VRTK_ControllerEvents>().triggerClicked)
+
+        if (GetComponent<VRTK_ControllerEvents>().triggerClicked && !isFlying && Time.time - cooldownRope > 0.1f)
+        {
             FindSpot();
+            cooldownRope = Time.time;
+        }
 
-        if (isFlying)
-            Flying();
+        if (GetComponent<VRTK_ControllerEvents>().triggerTouched)
+        {
+            
+            if(Physics.Raycast(camPosition.position, camPosition.forward, out hit, maxDistance, cullingmask))
+            {
+                helper.SetPosition(0, camPosition.position);
+                helper.SetPosition(1, hit.point);
+                helper.enabled = true;
+            }
 
-        if (Input.GetKey(KeyCode.L) && isFlying)
+        }
+        else
+        {
+            helper.enabled = false;
+        }
+
+        if (GetComponent<VRTK_ControllerEvents>().triggerClicked && isFlying && Time.time - cooldownRope > 0.1f)
         {
             isFlying = false;
+            hpb.SetFlyingToFalse(side);
             wire1.enabled = false;
-            wire2   .enabled = false;
+            cooldownRope = Time.time;
         }
+
+        if (isFlying)
+        {
+            Flying();
+        }
+
+        
 	}
 
     public void FindSpot()
     {
-        /*if (Physics.Raycast(transform.position, transform.forward, out hit))
-        {
-            if (hit.collider.gameObject.tag == "Tagged")
-            {
-                Debug.DrawRay(transform.position, transform.forward, Color.green);
-                print("Hit");
-            }
-        }*/
 
         Debug.Log("Fire raycast");
-        Debug.DrawRay(camPosition.position, camPosition.forward, Color.green);
+        //Debug.DrawRay(camPosition.position, camPosition.forward, Color.green);
         if (Physics.Raycast(camPosition.position, camPosition.forward, out hit, maxDistance, cullingmask))
         {
             Debug.Log("Found position");
@@ -66,29 +100,30 @@ public class GrapplingHook : MonoBehaviour {
             loc = hit.point;
             wire1.enabled = true;
             wire1.SetPosition(1, loc);
-            wire2.enabled = true;
-            wire2.SetPosition(1, loc);
-
+            hpb.SetHook(side, loc);
         }
     }
 
     public void Flying()
     {
-        Debug.Log("IsFlyyyiiiiinnng");
-        //transform.position = Vector3.Lerp(transform.position, loc, speed * Time.deltaTime / Vector3.Distance(transform.position, loc));
-        //VRTK_SDKManager sdk = VRTK_SDKManager.instance;
-        //sdk.loadedSetup.actualBoundaries.transform.position = Vector3.Lerp(transform.position, loc, speed * Time.deltaTime / Vector3.Distance(transform.position, loc));
-
+        //==========
         playArea = VRTK_DeviceFinder.PlayAreaTransform();
-        playArea.position = Vector3.Lerp(playArea.position, loc, speed * Time.deltaTime / Vector3.Distance(playArea.position, loc));
+        
+        //Vector3 currentVelocity = bp.GetVelocity();
+        //bp.ApplyBodyVelocity((currentVelocity+(loc - transform.position)).normalized*speed, true, true);
+        //==========
+        
         wire1.SetPosition(0,grip1.position);
-        wire2.SetPosition(0,grip2.position);
 
-        if (Vector3.Distance(playArea.position, loc) < 0.5f)
+        /*if (checkIfShouldSlow())
+        {
+            bp.enabled = false;
+        }*/
+        if (Vector3.Distance(playArea.position, loc) < 1f)
         {
             isFlying = false;
+            hpb.SetFlyingToFalse(side);
             wire1.enabled = false;
-            wire2.enabled = false;
         }
     }
 

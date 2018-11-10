@@ -22,7 +22,7 @@
             if (CanGrab(grabbingController) && NoArrowNotched(grabbingController.gameObject) && Time.time >= spawnDelayTimer)
             {
                 GameObject newArrow = Instantiate(arrowPrefab);
-                newArrow.name = "ArrowClone";
+                newArrow.name = "ArrowClone_"+ PhotonNetwork.playerName;
                 grabbingController.GetComponent<VRTK_InteractTouch>().ForceTouch(newArrow);
                 grabbingController.AttemptGrab();
                 spawnDelayTimer = Time.time + spawnDelay;

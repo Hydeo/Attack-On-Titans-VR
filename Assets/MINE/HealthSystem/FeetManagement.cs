@@ -41,6 +41,8 @@ public class FeetManagement : MonoBehaviour {
     {
         if (collision.gameObject.tag == "Sword" || collision.gameObject.tag == "Arrow")
         {
+            if (collision.gameObject.tag == "Sword")
+                GetComponent<AudioSource>().Play();
             hm.HitFeet(feetType);
             m_material.color = Color.green;
             hm.SetFeetStatus(this.feetType, false);
