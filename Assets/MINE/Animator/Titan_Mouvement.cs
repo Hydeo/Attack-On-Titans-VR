@@ -17,7 +17,7 @@ public class Titan_Mouvement : Photon.MonoBehaviour {
     private GameObject listWayPoints;
     private TitanAggro ta;
     //--------------
-
+    private GameObject sphereAttack = null;
 
     // Use this for initialization
     void Start () {
@@ -27,23 +27,47 @@ public class Titan_Mouvement : Photon.MonoBehaviour {
         nav.SetDestination(listWayPoints.transform.GetChild((int)(Random.Range(0, (float)(listWayPoints.transform.childCount)))).position);
         ta = GetComponent<TitanAggro>();
     }
-    
+
+    public void navStop()
+    {
+        nav.Stop();
+    }
+
+    public void navStart()
+    {
+        nav.Resume();
+    }
     // Update is called once per frame
+    public void Wander()
+    {
+        nav.SetDestination(listWayPoints.transform.GetChild((int)(Random.Range(0, (float)(listWayPoints.transform.childCount)))).position);
+    }
+
     void Update () {
-        
+       
         m_chan.SetFloat("Input", ((nav.speed * 100f) / 3.5f));
         if (ta.target == null) {
+            nav.speed = 3.5f;
             float dist = nav.remainingDistance;
             if (dist != Mathf.Infinity && nav.pathStatus == NavMeshPathStatus.PathComplete && nav.remainingDistance == 0)
             {
-                nav.SetDestination(listWayPoints.transform.GetChild((int)(Random.Range(0, (float)(listWayPoints.transform.childCount)))).position);
+                Wander();
             }
         }
         else
         {
+            nav.speed = 10f;
             nav.SetDestination(ta.target.position);
         }
 
-     
+        
+
+
     }
+
+   /* private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log(" collide in titna mouvement");
+        
+    }*/
 }

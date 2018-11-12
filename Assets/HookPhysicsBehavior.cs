@@ -58,16 +58,12 @@ public class HookPhysicsBehavior : MonoBehaviour {
     // Update is called once per frame
 
     private Vector3 getVelocity(Vector3 direction)
-    {
-        
-        Debug.Log(direction);   
-        Debug.Log(player.transform.position);   
-        if (Vector3.Distance(player.transform.position, direction) > 2f)
+    {  
+
+        if (Vector3.Distance(player.transform.position, direction) > 4f)
             velocity = (direction - player.transform.position).normalized * speed;
         else
             velocity = (direction - player.transform.position);
-
-        Debug.Log(velocity);
         return velocity;
     }
 
@@ -75,7 +71,7 @@ public class HookPhysicsBehavior : MonoBehaviour {
     void Update () {
 
         if(player == null)
-            player = GameObject.Find("Player 1");
+            player = GameObject.Find(PhotonNetwork.player.NickName);
 
         if (isRightFlying && isLeftFlying)
         {

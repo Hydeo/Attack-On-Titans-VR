@@ -9,6 +9,7 @@ public class GazPropulsion : MonoBehaviour {
     public GameObject soundsManager;
     private AudioSource[] sounds;
     public ParticleSystem smokeTrail;
+    public float speed;
 
     private bool isSoundPlaying;
     private bool isSmokePlaying;
@@ -34,7 +35,7 @@ public class GazPropulsion : MonoBehaviour {
 
             camera = VRTK_DeviceFinder.HeadsetCamera();
 
-            bp.ApplyBodyVelocity(camera.forward *10,true,true);
+            bp.ApplyBodyVelocity(camera.forward *speed,true,true);
         }
         else if (isSoundPlaying || isSmokePlaying)
         {

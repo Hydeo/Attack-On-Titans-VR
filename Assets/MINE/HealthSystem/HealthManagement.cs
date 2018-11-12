@@ -10,16 +10,18 @@ public enum FeetType
 public class HealthManagement : Photon.MonoBehaviour {
 
     public int maxHealth;
-    private bool neckIsAlive = false;
+    private bool neckIsAlive = true;
     private bool leftFeetAlive = true;
     private bool rightFeetAlive = true;
     private bool tryingToGetUp = false;
     public float getBackToFeetTimer;
     private Animator m_animator;
+    private Titan_Mouvement ta;
 
     // Use this for initialization
     void Start () {
         m_animator = GetComponent<Animator>();
+        ta = GetComponent<Titan_Mouvement>();
     }
 
     private void OnDestroy()
@@ -66,6 +68,7 @@ public class HealthManagement : Photon.MonoBehaviour {
 
     public void TriggerDeath()
     {
+        ta.navStop();
         m_animator.SetTrigger("Death");
     }
 
@@ -86,6 +89,13 @@ public class HealthManagement : Photon.MonoBehaviour {
                 break;
         }
 
+    }
+
+    public bool IsDown()
+    {
+        if (tryingToGetUp || !neckIsAlive)
+            return true;
+        return false;
     }
 
     public bool GetFeetStatus(FeetType feet)

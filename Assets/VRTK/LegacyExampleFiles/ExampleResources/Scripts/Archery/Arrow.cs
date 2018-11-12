@@ -16,7 +16,7 @@
         private Quaternion originalRotation;
         private Vector3 originalScale;
         private AudioSource source;
-
+        private AudioSource explosion;
         public void SetArrowHolder(GameObject holder)
         {
             arrowHolder = holder;
@@ -49,9 +49,11 @@
 
         private void Start()
         {
+           
             rigidBody = GetComponent<Rigidbody>();
             SetOrigns();
             source = GetComponent<AudioSource>();
+            explosion = GetComponents<AudioSource>()[1];
         }
 
         private void SetOrigns()
@@ -75,6 +77,17 @@
             {
                 ResetArrow();
             }
+            if (collision.gameObject.tag != "Player")
+                CollidedWithTitan();
+        }
+
+        private void CollidedWithTitan()
+        {
+            Debug.Log("Collided With titan");
+            ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+            GetComponentInChildren<Rigidbody>().constraints = RigidbodyConstraints.FreezePosition;
+            ps.Play();
+            explosion.Play();
         }
 
         private void RecreateNotch()

@@ -33,6 +33,9 @@ public class GrapplingHook : MonoBehaviour {
     private VRTK_BodyPhysics bp;
     private Transform playArea;
     private HookPhysicsBehavior hpb;
+
+    private AudioSource[] soundEffects;
+
 	// Use this for initialization
 	void Start () {
         playArea = VRTK_DeviceFinder.PlayAreaTransform();
@@ -44,7 +47,7 @@ public class GrapplingHook : MonoBehaviour {
         //camPosition = VRTK_DeviceFinder.HeadsetTransform();
 
         hpb = pa.GetComponent<HookPhysicsBehavior>();
-
+        soundEffects = GetComponents<AudioSource>();
     }
 	
 	// Update is called once per frame
@@ -74,6 +77,8 @@ public class GrapplingHook : MonoBehaviour {
 
         if (GetComponent<VRTK_ControllerEvents>().triggerClicked && isFlying && Time.time - cooldownRope > 0.1f)
         {
+            soundEffects[1].Stop();
+            soundEffects[2].Play();
             isFlying = false;
             hpb.SetFlyingToFalse(side);
             wire1.enabled = false;
@@ -96,6 +101,7 @@ public class GrapplingHook : MonoBehaviour {
         if (Physics.Raycast(camPosition.position, camPosition.forward, out hit, maxDistance, cullingmask))
         {
             Debug.Log("Found position");
+            soundEffects[0].Play();
             isFlying = true;
             loc = hit.point;
             wire1.enabled = true;
@@ -107,6 +113,8 @@ public class GrapplingHook : MonoBehaviour {
     public void Flying()
     {
         //==========
+        if(!soundEffects[1].isPlaying)
+            soundEffects[1].Play();
         playArea = VRTK_DeviceFinder.PlayAreaTransform();
         
         //Vector3 currentVelocity = bp.GetVelocity();
@@ -121,6 +129,8 @@ public class GrapplingHook : MonoBehaviour {
         }*/
         if (Vector3.Distance(playArea.position, loc) < 1f)
         {
+            soundEffects[1].Stop();
+            soundEffects[2].Play();
             isFlying = false;
             hpb.SetFlyingToFalse(side);
             wire1.enabled = false;

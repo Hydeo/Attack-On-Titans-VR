@@ -6,7 +6,6 @@
     {
         private GameObject arrow;
         private VRTK_InteractableObject obj;
-
         private void Start()
         {
             arrow = transform.Find("Arrow").gameObject;
@@ -27,7 +26,10 @@
                 collider.GetComponentInParent<BowAim>().SetArrow(arrow);
                 Destroy(gameObject);
             }
+            
         }
+
+
 
         private void CopyNotchToArrow()
         {
