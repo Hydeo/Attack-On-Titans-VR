@@ -8,7 +8,7 @@ Material:
   m_PrefabInternal: {fileID: 0}
   m_Name: fireball
   m_Shader: {fileID: 211, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _ALPHABLEND_ON _EMISSION _FADING_ON _REQUIRE_UV2
+  m_ShaderKeywords: _ALPHABLEND_ON _EMISSION _REQUIRE_UV2
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -66,10 +66,10 @@ Material:
     - _Cull: 0
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
-    - _DistortionBlend: 0.5
+    - _DistortionBlend: 1
     - _DistortionEnabled: 0
-    - _DistortionStrength: 1
-    - _DistortionStrengthScaled: 0.1
+    - _DistortionStrength: 3.75
+    - _DistortionStrengthScaled: 0.375
     - _DstBlend: 10
     - _EmissionEnabled: 1
     - _FlipbookMode: 1
@@ -82,7 +82,7 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
-    - _SoftParticlesEnabled: 1
+    - _SoftParticlesEnabled: 0
     - _SoftParticlesFarFadeDistance: 0.5
     - _SoftParticlesNearFadeDistance: 0
     - _SpecularHighlights: 1
@@ -94,4 +94,4 @@ Material:
     - _Color: {r: 1.4980392, g: 1.4980392, b: 1.4980392, a: 1}
     - _ColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 2.9960785, g: 0.972549, b: 0.047058824, a: 1}
-    - _SoftParticleFadeParams: {r: 0, g: 2, b: 0, a: 0}
+    - _SoftParticleFadeParams: {r: 0, g: 0, b: 0, a: 0}

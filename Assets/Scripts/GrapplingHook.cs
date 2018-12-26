@@ -7,7 +7,7 @@ public class GrapplingHook : MonoBehaviour {
 
     public Transform camPosition;
     public RaycastHit hit;
-
+    public Material[] helperMaterials = new Material[2];
     public HookPhysicsBehavior.Side side;
 
     public LayerMask cullingmask;
@@ -33,7 +33,7 @@ public class GrapplingHook : MonoBehaviour {
     private VRTK_BodyPhysics bp;
     private Transform playArea;
     private HookPhysicsBehavior hpb;
-
+    private bool hasUnclikTrigger = true;
     private AudioSource[] soundEffects;
 
 	// Use this for initialization
@@ -53,11 +53,17 @@ public class GrapplingHook : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if (GetComponent<VRTK_ControllerEvents>().triggerClicked && !isFlying && Time.time - cooldownRope > 0.1f)
+        if (GetComponent<VRTK_ControllerEvents>().triggerClicked && !isFlying && Time.time - cooldownRope > 0.1f && hasUnclikTrigger)
         {
+
             FindSpot();
             cooldownRope = Time.time;
         }
+
+        if (GetComponent<VRTK_ControllerEvents>().triggerClicked)
+            hasUnclikTrigger = false;
+        else
+            hasUnclikTrigger = true;
 
         if (GetComponent<VRTK_ControllerEvents>().triggerTouched)
         {
@@ -66,6 +72,14 @@ public class GrapplingHook : MonoBehaviour {
             {
                 helper.SetPosition(0, camPosition.position);
                 helper.SetPosition(1, hit.point);
+                helper.material = new Material(helperMaterials[1]);
+                helper.enabled = true;
+            }
+            else
+            {
+                helper.SetPosition(0, camPosition.position);
+                helper.SetPosition(1, camPosition.forward*maxDistance);
+                helper.material = new Material(helperMaterials[0]);
                 helper.enabled = true;
             }
 
@@ -127,6 +141,14 @@ public class GrapplingHook : MonoBehaviour {
         {
             bp.enabled = false;
         }*/
+
+        //If close to the end, stop the rope sound which could be annoying
+
+        if(Vector3.Distance(playArea.position, loc) < 4f)
+        {
+            soundEffects[1].Stop();
+        }
+
         if (Vector3.Distance(playArea.position, loc) < 1f)
         {
             soundEffects[1].Stop();

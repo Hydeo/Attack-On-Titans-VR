@@ -35,7 +35,7 @@ public class GazPropulsion : MonoBehaviour {
 
             camera = VRTK_DeviceFinder.HeadsetCamera();
 
-            bp.ApplyBodyVelocity(camera.forward *speed,true,true);
+            bp.ApplyBodyVelocity(camera.forward * speed,true,true);
         }
         else if (isSoundPlaying || isSmokePlaying)
         {

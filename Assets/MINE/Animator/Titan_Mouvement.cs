@@ -7,7 +7,8 @@ public class Titan_Mouvement : Photon.MonoBehaviour {
 
     private Animator m_chan;
     public NavMeshAgent nav;
-
+    public float walkingSpeed;
+    public float runningSpeed;
     //-----------
     private float latestDirectionChangeTime;
     private readonly float directionChangeTime = 3f;
@@ -44,19 +45,25 @@ public class Titan_Mouvement : Photon.MonoBehaviour {
     }
 
     void Update () {
-       
+        Debug.Log("TARGET : " + ta.target);
         m_chan.SetFloat("Input", ((nav.speed * 100f) / 3.5f));
         if (ta.target == null) {
-            nav.speed = 3.5f;
+            nav.speed = walkingSpeed;
             float dist = nav.remainingDistance;
-            if (dist != Mathf.Infinity && nav.pathStatus == NavMeshPathStatus.PathComplete && nav.remainingDistance == 0)
-            {
+            Debug.Log(transform.gameObject.name + " - " + nav.destination.ToString() + " => " + nav.remainingDistance.ToString() +" = "+nav.pathStatus);
+
+                if (!nav.pathPending && !nav.hasPath)
+                {
+                    Debug.Log("I have reached my destination!");
+                // Code that you want to execute when this event occurs.
                 Wander();
             }
+               
+            
         }
         else
         {
-            nav.speed = 10f;
+            nav.speed = runningSpeed;
             nav.SetDestination(ta.target.position);
         }
 

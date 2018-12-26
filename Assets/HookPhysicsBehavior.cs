@@ -60,9 +60,9 @@ public class HookPhysicsBehavior : MonoBehaviour {
     private Vector3 getVelocity(Vector3 direction)
     {  
 
-        if (Vector3.Distance(player.transform.position, direction) > 4f)
+        /*if (Vector3.Distance(player.transform.position, direction) > 4f)
             velocity = (direction - player.transform.position).normalized * speed;
-        else
+        else*/
             velocity = (direction - player.transform.position);
         return velocity;
     }

@@ -17,7 +17,7 @@ public class HealthManagement : Photon.MonoBehaviour {
     public float getBackToFeetTimer;
     private Animator m_animator;
     private Titan_Mouvement ta;
-
+    public bool isDead = false;
     // Use this for initialization
     void Start () {
         m_animator = GetComponent<Animator>();
@@ -32,10 +32,12 @@ public class HealthManagement : Photon.MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
+        if (isDead)
+            DestroyTitan();
         if (!leftFeetAlive && !rightFeetAlive && !tryingToGetUp)
         {
             Debug.Log("D");
-            TriggerDeath();
+            TriggerDown();
             tryingToGetUp = true;
         }
 
@@ -54,7 +56,7 @@ public class HealthManagement : Photon.MonoBehaviour {
         TriggerDeath();
         if (PhotonNetwork.isMasterClient)
         {
-            Invoke("DestroyTitan", 5);
+            Invoke("DestroyTitan", 3);
         }
         //Destroy after X
 
@@ -63,13 +65,19 @@ public class HealthManagement : Photon.MonoBehaviour {
     public void DestroyTitan()
     {
         Debug.Log("Destroy");
-        PhotonNetwork.Destroy(transform.root.gameObject);
+        PhotonNetwork.Destroy(transform.gameObject);
     }
 
     public void TriggerDeath()
     {
         ta.navStop();
         m_animator.SetTrigger("Death");
+    }
+
+    public void TriggerDown()
+    {
+        ta.navStop();
+        m_animator.SetTrigger("Down");
     }
 
     public void TriggerGetUp()

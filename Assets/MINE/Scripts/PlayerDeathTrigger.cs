@@ -11,6 +11,7 @@ public class PlayerDeathTrigger : MonoBehaviour {
     void Start () {
         aie = GetComponent<AudioSource>();
         sdk = VRTK_SDKManager.instance;
+        destination = GameObject.Find("PlayerRespawn").transform;
     }
 	
 	// Update is called once per frame

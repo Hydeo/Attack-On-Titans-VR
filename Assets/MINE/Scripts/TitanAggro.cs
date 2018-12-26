@@ -8,19 +8,26 @@ public class TitanAggro : Photon.MonoBehaviour {
     public Transform target;
     public GameObject sphereAttack = null;
     private SphereCollider sphereCollider= null;
+    public GameObject attackEffect;
     private bool attacking = false;
     private Titan_Mouvement tm;
     private AudioSource[] roars;
     private HealthManagement hm;
+    private ParticleSystem attackParticule;
+    private bool coolDownRoarDone = true;
+    private Animator m_animator;
 
     // Use this for initialization
     void Start () {
+
+        m_animator = GetComponent<Animator>();
         fov = GetComponent<TitansFieldOfView>();
         tm = GetComponent<Titan_Mouvement>();
         hm = GetComponent<HealthManagement>();
         roars = GetComponents<AudioSource>();
         sphereCollider = sphereAttack.GetComponent<SphereCollider>();
         sphereCollider.enabled = false;
+        attackParticule = attackEffect.GetComponent<ParticleSystem>();
         //StartCoroutine(UnAggroRoutine());
         InvokeRepeating("UnAggroRoutine2", 2.0f, 5.0f);
     }
@@ -30,18 +37,12 @@ public class TitanAggro : Photon.MonoBehaviour {
         Debug.Log("Coroutine " + target);
 
         if (fov.visibleTargets.Count == 0)
-            tm.Wander();
-        
-    }
-    IEnumerator UnAggroRoutine()    
-    {
-        Debug.Log("Coroutine " + target);
-
-        if (fov.visibleTargets.Count == 0)
+        {
             target = null;
+        }
         
-        yield return new WaitForSecondsRealtime(1f);
     }
+    
 
     private int FindIndexOfClosest()
     {
@@ -68,33 +69,56 @@ public class TitanAggro : Photon.MonoBehaviour {
         Debug.Log("!IsDown"+!hm.IsDown());
         if (attacking && (!hm.IsDown()))
         {
-            sphereCollider.enabled = true;
+            //sphereCollider.enabled = true;
             Attack();
+
         }
     }
 
+    private bool IsARoarPlaying()
+    {
+        foreach(AudioSource roar in roars)
+        {
+            if (roar.isPlaying)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private void Attack()
     {
-        tm.navStop();
-        int randomSound = Random.Range(0, 2);
-        if (!roars[0].isPlaying && !roars[1].isPlaying && !roars[2].isPlaying)
-            roars[randomSound].Play();
-        Debug.Log("Roared");
-        if (!roars[randomSound].isPlaying)
+        
+        int randomSound = Random.Range(0, 3);
+
+        if (!IsARoarPlaying() && !coolDownRoarDone)
         {
+            roars[randomSound].volume = 0.0f;
+            roars[randomSound].Play();
+            coolDownRoarDone = true;
+            tm.navStart();
+        }
+        Debug.Log("Roared" + randomSound);
+        if (!IsARoarPlaying() && coolDownRoarDone)
+        {
+            tm.navStop();
             Debug.Log("Boum Attacking");
-            float factor = (1.05f);
-            sphereAttack.transform.localScale = new Vector3(sphereAttack.transform.localScale.x * factor, sphereAttack.transform.localScale.y * factor, sphereAttack.transform.localScale.z * factor);
-            if (sphereAttack.transform.localScale.x >= 5)
-            {
-                tm.navStart();
-                sphereAttack.transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-                attacking = false;
-            }
+            roars[randomSound].volume = 0.6f;
+            roars[randomSound].Play();
+            m_animator.SetTrigger("Attack");
+            attackParticule.Emit(30);
+            sphereCollider.enabled = true;
+            attacking = false;
+            Invoke("SphereColliderDisable",0.5f);
+            coolDownRoarDone = false;
         }
     }
 
+    private void SphereColliderDisable()
+    {
+        sphereCollider.enabled = false;
+    }
 
 
     private void OnCollisionEnter(Collision other)
